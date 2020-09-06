@@ -1,0 +1,54 @@
+"""
+This is a template algorithm on Quantopian for you to adapt and fill in.
+"""
+import quantopian.algorithm as algo
+from quantopian.pipeline import Pipeline
+from quantopian.pipeline.data.builtin import USEquityPricing
+from quantopian.pipeline.filters import QTradableStocksUS
+
+
+def initialize(context):
+    context.aapl = sid(24)
+    schedule_function(minfunk, date_rules.every_day(), time_rules.market_open(hours=1))
+    
+    
+def minfunk(context, data):
+    
+    hist= data.history(context.aapl,'price',50,'1d')
+    log.info(hist.head())
+    sma50=hist.mean()
+    sma20=hist[-20].mean()
+    
+    
+    open_orders = get_open_orders()
+    
+    
+    if sma20>sma50:
+        order_target_percent(context.aapl,1.0)
+    elif sma50>sma20:
+        order_target_percent(context.aapl,-1.0)
+        
+    
+    record(leverage = context.account.leverage)
+
+"""
+def handle_data(context, data):
+   
+    hist= data.history(context.aapl,'price',50,'1d')
+    log.info(hist.head())
+    sma50=hist.mean()
+    sma20=hist[-20].mean()
+    
+    #nytt
+    open_orders = get_open_orders()
+    
+    
+    if sma20>sma50:
+        order_target_percent(context.aapl,1.0)
+    elif sma50>sma20:
+        order_target_percent(context.aapl,-1.0)
+        
+    #nytt
+    record(leverage = context.account.leverage)
+    
+ """
